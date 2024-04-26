@@ -38,8 +38,18 @@ const userSchema = new Schema({
     isVerified: {
         type: Boolean,
         default: false
+    },
+    googleId: {
+        type: String
+    },
+    facebookId: {
+        type: String
     }
 
+
+
 })
+
+module.exports = mongoose.model('User', userSchema)
 
 

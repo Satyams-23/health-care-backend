@@ -1,10 +1,12 @@
-const User = require('../models/user');
+const User = require('../model/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');//
+const sendEmail = require('../utils/sendEmail');
+const generateOTP = require('../utils/generateOTP');
 
 // Register
-const signup = async (res, req) => {
+const signup = async (req, res) => {
     const data = req.body;
 
     const errors = validationResult(req);// 
@@ -32,7 +34,11 @@ const signup = async (res, req) => {
         });
 
         await newUser.save();
-        return res.status(200).json({ message: 'User registered successfully' });
+
+        await sendEmail(data.email, 'Verify your email', `Your OTP is ${OTP}`);
+
+
+        res.json({ message: 'OTP sent for verification', otp: otp });
 
     }
     catch (error) {
@@ -43,7 +49,7 @@ const signup = async (res, req) => {
 
 }
 
-const signupverify = async (res, req) => {
+const signupverify = async (req, res) => {
     const data = req.body;
     const errors = validationResult(req);//
 
@@ -66,6 +72,9 @@ const signupverify = async (res, req) => {
         }
 
         user.isVerified = true;
+        // Remove OTP and expiration fields
+        data.otp = undefined;
+        data.otpExpires = undefined;
         await user.save();
 
         return res.status(200).json({ message: 'User verified successfully' });
@@ -78,7 +87,7 @@ const signupverify = async (res, req) => {
 
 }
 
-const login = async (res, req) => {
+const login = async (req, res) => {
 
     const data = req.body;
 
@@ -115,7 +124,7 @@ const login = async (res, req) => {
     }
 }
 
-const logout = async (res, req) => {
+const logout = async (req, res) => {
     const data = req.body;
 
     const errors = validationResult(req);//
@@ -142,6 +151,64 @@ const logout = async (res, req) => {
         return res.status(500).json({ message: error.message });
     }
 }
+
+const signupresendotp = async (req, res) => {
+
+    const data = req.body;
+
+    const errors = validationResult(req);//
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        const user = await User.findOne({ email: data.email });
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        if (user.isVerified) {
+            return res.status(400).json({ message: 'User already verified' });
+        }
+
+        if (user.otp_expire > Date.now()) {
+            return res.status(400).json({ message: 'OTP is still valid' });
+        }
+
+        const OTP = await generateOTP();
+        const OTPExpire = new Date(Date.now() + 120000);// 2 minutes
+
+        user.otp = OTP;
+        user.otp_expire = OTPExpire;
+        await user.save();
+
+        await sendEmail(data.email, 'Verify your email', `Your OTP is ${OTP}`);
+
+        return res.status(200).json({ message: 'OTP sent for verification', otp: otp });
+
+    }
+
+    catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+
+}
+
+const googleLogin = async (req, res) => {
+
+    res.json({ message: 'Google login' });
+}
+
+const facebookLogin = async (req, res) => {
+
+    res.json({ message: 'Facebook login' });
+}
+
+
+
+module.exports = { signup, signupverify, login, logout, googleLogin, facebookLogin };//
 
 
 
