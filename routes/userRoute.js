@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/signup', userController.signup);
 router.post('/signupverify', userController.signupverify);
-
+router.post('/resendotp', userController.signupresendotp);
 router.post('/login', userController.login);
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));

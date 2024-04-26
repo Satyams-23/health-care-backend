@@ -208,7 +208,7 @@ const facebookLogin = async (req, res) => {
 
 
 
-module.exports = { signup, signupverify, login, logout, googleLogin, facebookLogin };//
+module.exports = { signup, signupverify, login, logout, googleLogin, facebookLogin, signupresendotp };//
 
 
 
