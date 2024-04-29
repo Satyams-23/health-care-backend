@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "build": "echo 'No build step required for Node.js backend'",
+
+    "build": "babel src -d dist",
+    
     "start": "node index.js"
   },
   
