@@ -1,0 +1,8 @@
+{
+    "routes": [
+      { "handle": "filesystem" },
+      { "src": "/api/v1/auth/(.*)", "dest": "/api/v1/auth" },
+      { "src": "/(.*)", "dest": "/" }
+    ]
+  }
+  
