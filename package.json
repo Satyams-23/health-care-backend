@@ -7,7 +7,6 @@
     "dev": "nodemon index.js",
     "start": "node index.js"
   },
-  
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -26,6 +25,7 @@
     "nodemon": "^3.1.0",
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "stripe": "^15.5.0"
   }
 }
