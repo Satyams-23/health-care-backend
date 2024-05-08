@@ -4,20 +4,29 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 require("./db/dbConnection");
+const { deleteUnverifiedUsers } = require('./middleware/auth.middleware');
 
 
 const passport = require('./utils/passport');
 const session = require('express-session');
-const userRoute = require('./routes/userRoute');
+const userRoute = require('./routes/user.route');
+const doctorRoute = require('./routes/doctor.route');
+const appointmentRoute = require('./routes/appointment.route');
 
 
 
 const port = 8000;
 
 
+// call deleteUnverifiedUsers function
+// deleteUnverifiedUsers();//
+
+app.use(deleteUnverifiedUsers);
+
+
 // Session middleware
 app.use(session({
-  secret: 'your_secret_key',
+  secret: 'mySecretKey',
   resave: false,
   saveUninitialized: false
 }));
@@ -39,6 +48,9 @@ app.get("/", (req, res) => {
 
 // routes
 app.use("/api/v1/auth", userRoute);
+app.use("/api/v1/doctor", doctorRoute);
+app.use("/api/v1/appointment", appointmentRoute);
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
