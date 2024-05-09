@@ -162,8 +162,15 @@ const login = asyncHandler(async (req, res) => {
 const logout = asyncHandler(async (req, res) => {
     const user = req.user;
 
-    user.refreshToken = undefined;
+    {
+        $unset: {
+            refreshToken: 1// remove the refresh token from the user
+        }
+
+    }
+
     await user.save({ validateBeforeSave: false });
+
 
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
