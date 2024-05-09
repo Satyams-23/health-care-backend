@@ -25,6 +25,11 @@ const userSchema = new Schema({
         default: Date.now
     }
     ,
+
+    phoneNumber: {
+        type: String
+    },
+
     otp: {
 
         type: String

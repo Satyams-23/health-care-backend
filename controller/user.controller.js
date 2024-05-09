@@ -40,7 +40,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
             },
             process.env.JWT_SECRET,
             {
-                expiresIn: "7d",
+                expiresIn: "30d",
             }
 
         )
@@ -287,38 +287,44 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         const data = req.body;
 
         if (data.password) {
-            data.password = await bcrypt.hash(data.password, 10);//
+            // Hash the password if included in the update data
+            data.password = await bcrypt.hash(data.password, 10);
         }
 
         if (data.email) {
+            // Check if the provided email already exists in the database
             const existingUser = await User.findOne({ email: data.email, isVerified: true });
             if (existingUser && existingUser._id.toString() !== user._id.toString()) {
                 throw new ApiError(400, 'Email already exists');
             }
         }
 
+        if (data.phoneNumber) {
+            // Update the phone number if included in the update data
+            await User.findByIdAndUpdate(req.user._id, { phoneNumber: data.phoneNumber }, { new: true });
+            // Consider whether you need to check uniqueness of phone numbers here
+        }
+
         if (data.username) {
+            // Check if the provided username already exists in the database
             const existingUser = await User.findOne({ username: data.username });
             if (existingUser && existingUser._id.toString() !== user._id.toString()) {
                 throw new ApiError(400, 'Username already exists');
             }
         }
 
-
-
-
-
+        // Merge the update data into the user object and save
         Object.assign(user, data);
         await user.save();
 
+        // Respond with the updated user profile
         res.json(new ApiResponse('User profile updated successfully', user));
-    }
-
-    catch (error) {
+    } catch (error) {
+        // Handle errors and respond with an appropriate error message
         console.error(error);
         throw new ApiError(400, 'Error updating user profile');
     }
-}
-);
+});
+
 
 module.exports = { signup, signupverify, login, logout, googleLogin, facebookLogin, signupresendotp, forgotpassword, resetpassword, userProfile, updateUserProfile };
