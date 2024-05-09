@@ -97,31 +97,31 @@ const getAllAppointments = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(appointments));
 });
 
-// Get appointments by patient ID
-const getAppointmentsByPatientId = asyncHandler(async (req, res) => {
-    try {
-        const appointments = await Appointment.find({ patientId: req.params.id });
-        res.json(new ApiResponse(200, appointments, 'Appointments fetched successfully', true));
+// // Get appointments by patient ID
+// const getAppointmentsByPatientId = asyncHandler(async (req, res) => {
+//     try {
+//         const appointments = await Appointment.find({ patientId: req.params.id });
+//         res.json(new ApiResponse(200, appointments, 'Appointments fetched successfully', true));
 
-    } catch (error) {
-        // console.error(error);
-        res.status(500).json({ message: error.message });
+//     } catch (error) {
+//         // console.error(error);
+//         res.status(500).json({ message: error.message });
 
-    }
-});
+//     }
+// });
 
-// Get appointments by doctor ID
-const getAppointmentsByDoctorId = asyncHandler(async (req, res) => {
-    try {
-        const appointments = await Appointment.find({ doctorId: req.params.id });
-        res.json(new ApiResponse(200, appointments, 'Appointments fetched successfully', true));
+// // Get appointments by doctor ID
+// const getAppointmentsByDoctorId = asyncHandler(async (req, res) => {
+//     try {
+//         const appointments = await Appointment.find({ doctorId: req.params.id });
+//         res.json(new ApiResponse(200, appointments, 'Appointments fetched successfully', true));
 
-    }
-    catch (error) {
-        // console.error(error);
-        res.status(500).json({ message: error.message });
-    }
-});
+//     }
+//     catch (error) {
+//         // console.error(error);
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 
 // Get appointments by status
 const getAppointmentsByStatus = asyncHandler(async (req, res) => {
@@ -135,6 +135,40 @@ const getAppointmentsByStatus = asyncHandler(async (req, res) => {
 
     }
 });
+
+
+const getUpcomingAppointmentsByPatientId = asyncHandler(async (req, res) => {
+    try {
+        const appointments = await Appointment.find({ patientId: req.params.id, date: { $gte: new Date() } });
+        res.json(new ApiResponse(200, appointments, 'Upcoming appointments fetched successfully', true));
+
+    } catch (error) {
+        // console.error(error);
+        res.status(500).json({ message: error.message });
+
+    }
+}
+);
+
+const getPastAppointmentsByPatientId = asyncHandler(async (req, res) => {
+    try {
+        const appointments = await Appointment.find({ patientId: req.params.id, date: { $lt: new Date() } });
+        res.json(new ApiResponse(200, appointments, 'Past appointments fetched successfully', true));
+
+    } catch (error) {
+        // console.error(error);
+        res.status(500).json({ message: error.message });
+
+    }
+}
+);
+
+
+
+
+
+
+
 
 // Update appointment
 const updateAppointment = asyncHandler(async (req, res) => {
@@ -243,11 +277,13 @@ const cancelAppointment = asyncHandler(async (req, res) => {
 module.exports = {
     createAppointmentwithPayment,
     getAllAppointments,
-    getAppointmentsByPatientId,
-    getAppointmentsByDoctorId,
+    // getAppointmentsByPatientId,
+    // getAppointmentsByDoctorId,
     getAppointmentsByStatus,
     updateAppointment,
     deleteAppointment,
     // confirmAppointment,
-    cancelAppointment
+    cancelAppointment,
+    getUpcomingAppointmentsByPatientId,
+    getPastAppointmentsByPatientId
 };

@@ -17,10 +17,13 @@ router.put('/update/:id', auth, AppointmentController.updateAppointment);
 router.delete('/delete/:id', auth, AppointmentController.deleteAppointment);
 
 // Get appointment by ID
-router.get('/doctor/:id', auth, AppointmentController.getAppointmentsByDoctorId);
+// router.get('/doctor/:id', auth, AppointmentController.getAppointmentsByDoctorId);
 
 // Get appointment by ID
-router.get('/patient/:id', auth, AppointmentController.getAppointmentsByPatientId);// means get all appointments by patient ID 
+router.get('/upcoming/:id', auth, AppointmentController.getUpcomingAppointmentsByPatientId);// means get all appointments by patient ID 
+
+// Get appointment by ID
+router.get('/past/:id', auth, AppointmentController.getPastAppointmentsByPatientId);// means get all appointments by patient ID
 
 // Confirm appointment
 // router.put('/confirm/:id', auth, AppointmentController.confirmAppointment);
