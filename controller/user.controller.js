@@ -266,7 +266,19 @@ const facebookLogin = asyncHandler(async (req, res) => {
 
 const userProfile = asyncHandler(async (req, res) => {
     const user = req.user;
-    res.json(new ApiResponse('User profile', user));
+
+    const data = user.toObject();
+
+    delete data.password;
+    delete data.otp;
+    delete data.otp_expire;
+    delete data.refreshToken;
+    delete data.isVerified;
+    delete data.created_at;
+    delete data.updated_at;
+
+    return res.status(200).json(new ApiResponse(200, data, "User Profile Fetched Successfully"))
+
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
