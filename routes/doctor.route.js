@@ -12,4 +12,5 @@ router.put('/:id', isAuthentication, doctorController.updateDoctor);
 router.delete('/:id', isAuthentication, doctorController.deleteDoctor);
 
 
+
 module.exports = router;
